@@ -6,6 +6,9 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.terraludyca.configs.ConfigManager;
@@ -23,25 +26,23 @@ public class AuthImplementation implements Auth{
            TODO(developer) - See https://developers.google.com/identity for
           guides on implementing OAuth2 for your application.*/
         GoogleCredentials credentials = GoogleCredentials.fromStream(Objects.requireNonNull(getCredFromJsonFile(config.getPathSecret() + config.getFileSecret())))
-                .createScoped(Arrays.asList(DriveScopes.DRIVE_FILE));
+                .createScoped(Arrays.asList(SheetsScopes.SPREADSHEETS_READONLY));
         HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(
                 credentials);
 
         // Build a new authorized API client service.
-        Drive service = new Drive.Builder(new NetHttpTransport(),
+        Sheets service = new Sheets.Builder(new NetHttpTransport(),
                 GsonFactory.getDefaultInstance(),
                 requestInitializer)
                 .setApplicationName("ClientTessereCred")
                 .build();
 
         try {
-            OutputStream outputStream = new ByteArrayOutputStream();
-
-            service.files().get(realFileId)
-                    .setSupportsAllDrives(true)
-                    .executeMediaAndDownloadTo(outputStream);
-
-            return (ByteArrayOutputStream) outputStream;
+            String range = "Responses!A4:H";
+            ValueRange response = service.spreadsheets().values()
+                    .get(realFileId, range)
+                    .execute();
+            return null;
         } catch (GoogleJsonResponseException e) {
             // TODO(developer) - handle error appropriately
             System.err.println("Unable to move file: " + e.getDetails());
