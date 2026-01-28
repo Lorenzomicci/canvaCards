@@ -38,15 +38,4 @@ public class MemberService {
                 .filter(member -> member.getSubscriptionYear() == year)
                 .collect(Collectors.toList());
     }
-
-    /**
-     * Returns the member at the given index from the sheet.
-     */
-    public Member getMemberByIndex(int index) throws IOException {
-        List<Member> members = getMembers();
-        if (index < 0 || index >= members.size()) {
-            throw new IllegalArgumentException("Indice membro non valido: " + index);
-        }
-        return members.get(index);
-    }
 }

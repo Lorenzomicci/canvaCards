@@ -15,7 +15,7 @@ import java.util.List;
 public class EnrollmentNotificationService {
 
     private final MemberService memberService;
-    private final CardService cardService;
+    private final ReportRenderer reportRenderer;
     private final NotificationGateway notificationGateway;
     private final LudotecaProperties properties;
 
@@ -23,11 +23,11 @@ public class EnrollmentNotificationService {
      * Builds the service with required collaborators.
      */
     public EnrollmentNotificationService(MemberService memberService,
-                                         CardService cardService,
+                                         ReportRenderer reportRenderer,
                                          NotificationGateway notificationGateway,
                                          LudotecaProperties properties) {
         this.memberService = memberService;
-        this.cardService = cardService;
+        this.reportRenderer = reportRenderer;
         this.notificationGateway = notificationGateway;
         this.properties = properties;
     }
@@ -39,7 +39,7 @@ public class EnrollmentNotificationService {
         int year = properties.getTargetYear();
         List<Member> members = memberService.getMembersByYear(year);
         for (Member member : members) {
-            byte[] pdf = cardService.generateCard(member);
+            byte[] pdf = reportRenderer.renderPdf(member);
             notificationGateway.send(member, pdf);
         }
         return new NotificationSummary(year, members.size());
