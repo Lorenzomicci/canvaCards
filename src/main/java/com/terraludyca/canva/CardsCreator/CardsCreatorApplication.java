@@ -5,7 +5,7 @@ import com.terraludyca.ludoteca.config.LudotecaProperties;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.terraludyca")
 @EnableConfigurationProperties(LudotecaProperties.class)
 public class CardsCreatorApplication {
 
