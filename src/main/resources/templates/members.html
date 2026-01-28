@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ludoteca - Gestione iscritti</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<header class="app-header">
+    <div>
+        <h1>Gestione iscritti Ludoteca</h1>
+        <p>Caricati da Google Sheets con invio automatico tessere PDF.</p>
+    </div>
+    <form class="notify-form" method="post" th:action="@{/notify}">
+        <button type="submit">Invia tessere 2026</button>
+    </form>
+</header>
+
+<section class="summary" th:if="${notificationSummary != null}">
+    <strong>Invio completato:</strong>
+    <span th:text="${notificationSummary.totalNotified}">0</span>
+    tessere inviate per l'anno
+    <span th:text="${notificationSummary.year}">2026</span>.
+</section>
+
+<section class="summary error" th:if="${errorMessage != null}">
+    <strong th:text="${errorMessage}">Errore di caricamento.</strong>
+</section>
+
+<section class="table-wrapper">
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Anno</th>
+            <th>Tessera</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="memberView : ${members}">
+            <td th:text="${memberView.index}">0</td>
+            <td th:text="${memberView.member.name}">Nome</td>
+            <td th:text="${memberView.member.email}">email@example.com</td>
+            <td th:text="${memberView.member.subscriptionYear}">2026</td>
+            <td>
+                <a class="link" th:href="@{/api/members/{index}/card(index=${memberView.index})}">
+                    Scarica PDF
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>
